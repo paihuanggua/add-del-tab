@@ -1,1 +1,152 @@
-hellow
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<link href="main.css" type="text/css" rel="stylesheet" />
+<script src="main.js"></script>
+<script> 
+window.onload=function(){
+	var website=[
+		'https://www.baidu.com/',
+		'http://bj.meituan.com/', 
+		'http://weibo.com/',
+		'http://www.imooc.com/',
+		'http://www.iqiyi.com/',
+		'http://www.youku.com/',
+		'http://www.jd.com/',
+		'http://www.taobao.com/',
+	];
+	var website_con=[
+		'百度',
+		'美团',
+		'微博',
+		'慕课',
+		'爱奇艺',
+		'优酷',
+		'京东',
+		'淘宝',
+	];
+	var oUl=document.getElementById('l');
+	var oRT=document.getElementById('rt');
+	var oRB=document.getElementById('rb');
+	var arr=[];
+	var bOk=false;
+	var bOk2=false;
+	
+	//创建左边导航内容
+	for(var i=0;i<website_con.length;i++){
+		var oLi=document.createElement('li');
+		oLi.innerHTML=website_con[i];
+		oUl.appendChild(oLi);
+	}
+	var aLi=oUl.children;
+	aLi[aLi.length-1].style.margin=0;
+	oRB.style.height=oUl.offsetHeight-oRT.offsetHeight+'px';
+	for(var i=0;i<aLi.length;i++){
+		(function(index){
+			aLi[index].onclick=function(){
+				for(var i=0;i<aLi.length;i++){
+					aLi[i].className='';	
+				}
+				this.className='on';
+				var aRTli=oRT.children;
+				var aRBdiv=oRB.children;
+				if(aRTli.length){//有length
+					//遍历arr的b是否存在
+					for(var i=0;i<arr.length;i++){
+						if(arr[i].b==index){//存在时bOk=true;
+							bOk=true;
+						}
+					}
+					if(bOk){//如果遍历找到
+						for(var i=0;i<aRTli.length;i++){
+							aRTli[i].className='';
+							aRBdiv[i].style.display='none';	
+							
+						}
+						for(var i=0;i<arr.length;i++){
+							if(index==arr[i].b){
+								aRTli[arr[i].a-1].className='active';
+								aRBdiv[arr[i].a-1].style.display='block';	
+							}	
+						}
+					}else{//遍历找不到
+						//创建li
+						var oLi=document.createElement('li');
+						oLi.innerHTML='<span id="close">X</span>'+aLi[index].innerHTML+'';
+						for(var i=0;i<aRTli.length;i++){
+							aRTli[i].className='';	
+						}
+						oRT.appendChild(oLi);
+						oLi.className='active';
+						//创建div
+						var oRBdiv=document.createElement('iframe');
+						oRBdiv.setAttribute('src',website[index]);
+						oRB.appendChild(oRBdiv);
+						
+						for(var i=0;i<aRBdiv.length;i++){
+							aRBdiv[i].style.display='none';
+						}
+						oRBdiv.style.display='block';
+						arr.push({a:aRTli.length,b:index});
+						oLi.n=(arr[aRTli.length-1]).a;//新建的就是最后一个，保存下来是->在整体中的第几个;
+						var oClose=oLi.children[0];
+						oClose.onclick=function(ev){
+							var oEvent=ev||event;
+							closeClick(oRT,oLi,oRB,oRBdiv,arr,oLi,aRTli,bOk2,aRBdiv,aLi);
+							bOk2=false;
+							//选项卡
+							tab(aRTli,aRBdiv,aLi,arr);
+							oEvent.cancelBubble=true;
+						};
+						//选项卡
+						tab(aRTli,aRBdiv,aLi,arr);
+					}
+					bOk=false;
+					
+				}else{//没有length
+					//创建li
+					var oLi=document.createElement('li');
+					oLi.innerHTML='<span id="close">X</span>'+aLi[index].innerHTML+'';
+					oLi.className='active';
+					oRT.appendChild(oLi);
+					
+					//创建div
+					var oRBdiv=document.createElement('iframe');
+					oRBdiv.setAttribute('src',website[index]);
+					oRB.appendChild(oRBdiv);
+					
+					//a 代表oRT->li的个数
+					arr.push({a:1,b:index});
+					//删除
+					var oClose=oLi.children[0];
+					var oDiv=oRB.children[0];
+					oClose.onclick=function(ev){
+						var oEvent=ev||event;
+						closeClick(oRT,oLi,oRB,oRBdiv,arr,oLi,aRTli,bOk2,aRBdiv,aLi);
+						bOk2=false;
+						tab(aRTli,aRBdiv,aLi,arr);
+						oEvent.cancelBubble=true;
+					};	
+				}
+			}
+		})(i);	
+	}
+	
+		
+};
+</script>
+</head>
+
+<body>
+<div id="box">
+	<ul id="l"></ul>
+    <div id="r">
+    	<ul id="rt"></ul>
+        <div id="rb"> </div>
+    </div>
+</div>
+</body>
+</html>
+
